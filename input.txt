@@ -1,0 +1,124 @@
+// /*******************************************************************************************
+*
+*   raylib [core] example - Basic window and simple Pong game
+*
+*   Example originally created with raylib 1.0, last time updated with raylib 4.0
+*   
+*   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
+*   BSD-like license that allows static linking with closed source software
+*
+*   Copyright (c) 2013-2024 Ramon Santamaria (@raysan5)
+*
+********************************************************************************************/
+
+#include "raylib.h"
+
+//------------------------------------------------------------------------------------
+// Program main entry point
+//------------------------------------------------------------------------------------
+int main(void)
+{
+    // Initialization
+    //--------------------------------------------------------------------------------------
+    const int screenWidth = 800;
+    const int screenHeight = 450;
+
+    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic pong");
+
+    // Ball settings
+    Vector2 ballPosition = { (float)screenWidth/2, (float)screenHeight/2 };
+    Vector2 ballSpeed = { 5.0f, 4.0f };
+    int ballRadius = 10;
+
+    // Paddle settings
+    Rectangle player1 = { 50, screenHeight/2 - 50, 20, 100 };
+    Rectangle player2 = { screenWidth - 70, screenHeight/2 - 50, 20, 100 };
+    int paddleSpeed = 6;
+
+    // Score
+    int score1 = 0;
+    int score2 = 0;
+
+    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
+    //--------------------------------------------------------------------------------------
+
+    // Main game loop
+    while (!WindowShouldClose())    // Detect window close button or ESC key
+    {
+        // Update
+        //----------------------------------------------------------------------------------
+        
+        // Player 1 Movement (W and S keys)
+        if (IsKeyDown(KEY_W) && player1.y > 0) player1.y -= paddleSpeed;
+        if (IsKeyDown(KEY_S) && player1.y < screenHeight - player1.height) player1.y += paddleSpeed;
+
+        // Player 2 Movement (Up and Down arrows)
+        if (IsKeyDown(KEY_UP) && player2.y > 0) player2.y -= paddleSpeed;
+        if (IsKeyDown(KEY_DOWN) && player2.y < screenHeight - player2.height) player2.y += paddleSpeed;
+
+        // Ball movement
+        ballPosition.x += ballSpeed.x;
+        ballPosition.y += ballSpeed.y;
+
+        // Ball collision with top/bottom walls
+        if ((ballPosition.y >= (screenHeight - ballRadius)) || (ballPosition.y <= ballRadius)) 
+            ballSpeed.y *= -1.0f;
+
+        // Ball collision with paddles
+        if (CheckCollisionCircleRec(ballPosition, ballRadius, player1))
+        {
+            ballSpeed.x *= -1.0f;
+            ballPosition.x = player1.x + player1.width + ballRadius; // Prevent getting stuck
+        }
+        if (CheckCollisionCircleRec(ballPosition, ballRadius, player2))
+        {
+            ballSpeed.x *= -1.0f;
+            ballPosition.x = player2.x - ballRadius; // Prevent getting stuck
+        }
+
+        // Scoring
+        if (ballPosition.x >= screenWidth)
+        {
+            score1++;
+            ballPosition = { (float)screenWidth/2, (float)screenHeight/2 };
+            ballSpeed = { -5.0f, 4.0f };
+        }
+        else if (ballPosition.x <= 0)
+        {
+            score2++;
+            ballPosition = { (float)screenWidth/2, (float)screenHeight/2 };
+            ballSpeed = { 5.0f, 4.0f };
+        }
+        //----------------------------------------------------------------------------------
+
+        // Draw
+        //----------------------------------------------------------------------------------
+        BeginDrawing();
+
+            ClearBackground(RAYWHITE);
+
+            // Draw center line
+            DrawLine(screenWidth/2, 0, screenWidth/2, screenHeight, LIGHTGRAY);
+
+            // Draw paddles
+            DrawRectangleRec(player1, MAROON);
+            DrawRectangleRec(player2, DARKBLUE);
+
+            // Draw ball
+            DrawCircleV(ballPosition, ballRadius, DARKGRAY);
+
+            // Draw scores
+            DrawText(TextFormat("%d", score1), screenWidth/4, 20, 40, MAROON);
+            DrawText(TextFormat("%d", score2), 3*screenWidth/4, 20, 40, DARKBLUE);
+
+        EndDrawing();
+        //----------------------------------------------------------------------------------
+    }
+
+    // De-Initialization
+    //--------------------------------------------------------------------------------------
+    CloseWindow();        // Close window and OpenGL context
+    //--------------------------------------------------------------------------------------
+
+    return 0;
+}
