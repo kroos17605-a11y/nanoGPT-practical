@@ -1,4 +1,4 @@
-# Fundamentals of Decision and Data Analytics (SEEM3650)
+
 ## Practical Exam Report
 
 ---
@@ -7,11 +7,11 @@
 
 **Generated samples (first 5 lines):**
 ```text
-KING RICHARD III:
-O, my good lord, I would thou wert not here!
+Which if thy cord, and leads thee set be exceed,
+That I the gatesh bark thy purchase.
 
-QUEEN ELIZABETH:
-And I, that I had never been thy queen!
+SICINIUS:
+I enjoy thy confast, and to heavens
 ```
 
 ---
