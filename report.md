@@ -30,7 +30,7 @@ The best settings that produced this result were:
 - **Layers:** 7
 - **Heads:** 7
 
-The plot of Loss vs. Number of Heads is saved in `figures/loss_vs_heads.png`.
+The plot of Loss vs. Number of Heads is saved in `loss_vs_heads.png`.
 
 ---
 
